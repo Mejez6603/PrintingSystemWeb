@@ -1,1 +1,4 @@
 Flask>=2.2.3
+SQLAlchemy
+Flask-SQLAlchemy
+gunicorn
