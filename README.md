@@ -4,6 +4,8 @@
 
 This is a simple, web-based application developed using **Python (Flask)** for the backend, **HTML, CSS, and JavaScript** for the frontend, and **SQLite** as its database. It's designed to help small printing businesses manage their daily transactions, track sales, and generate essential reports through a user-friendly web interface.
 
+![](images/transaction_screenshot.png) ![](images/sales_report_screenshot.png) 
+
 The system aims to provide a modern, organized, and accessible solution for digital record-keeping and basic business insights.
 
 ## Features
