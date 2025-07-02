@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printing Shop Transaction System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Printing Shop Logo">
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-button active" id="transactionNavBtn">Transaction</button>
+                <button class="nav-button" id="reportNavBtn">Report</button>
+            </nav>
+            <div class="sidebar-bottom">
+                <button class="reset-button" id="resetRecordsBtn">Reset Records</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <div class="date-time" id="currentDateTime"></div>
+            </header>
+
+            <section class="transaction-input-section card">
+                <h2>Transaction</h2>
+                <div class="transaction-input-controls">
+                    <div class="transaction-input-grid">
+                        <div class="grid-header">Paper Type</div>
+                        <div class="grid-header">Color</div>
+                        <div class="grid-header">Pages</div>
+                        <div class="grid-header">Price/Page</div>
+                        <div class="grid-header">Total</div>
+
+                        <select id="paperType" class="input-field">
+                            <option value="">--Select--</option>
+                            <option value="Short">Short</option>
+                            <option value="Long">Long</option>
+                            <option value="A4">A4</option>
+                            <option value="PhotoPaper">PhotoPaper</option>
+                        </select>
+                        <select id="color" class="input-field">
+                            <option value="">--Select--</option>
+                            <option value="Black">Black</option>
+                            <option value="Colored">Colored</option>
+                        </select>
+                        <input type="number" id="pages" class="input-field" placeholder="Pages" min="1">
+                        <input type="number" id="pricePerPage" class="input-field" placeholder="Price/Page" step="0.01">
+                        <input type="text" id="total" class="input-field" placeholder="Total" disabled>
+                    </div>
+                    <button id="addItemBtn" class="add-item-btn primary-btn disabled" disabled>Add Item</button>
+                </div>
+            </section>
+
+            <section class="items-in-transaction-section card">
+                <h2>Items in Transaction</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Paper Type</th>
+                                <th>Color</th>
+                                <th>Pages</th>
+                                <th>Price/Page</th>
+                                <th>Total</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsInTransactionTableBody">
+                        </tbody>
+                    </table>
+                </div>
+                <button id="confirmTransactionBtn" class="confirm-transaction-btn secondary-btn">Confirm Transaction</button>
+            </section>
+
+            <div class="record-and-summary-container">
+                <section class="record-section card">
+                    <h2>Record</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Paper Type</th>
+                                    <th>Color</th>
+                                    <th>Pages</th>
+                                    <th>Price/Page</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <aside class="quick-sales-summary card">
+                    <h2>Quick Sales Summary</h2>
+                    <div class="summary-main-figures">
+                        <p>Today's Income: <span id="todayIncome">₱0.00</span> <span class="date-info" id="todayDate"></span></p>
+                        <p>This Month: <span id="monthIncome">₱0.00</span> <span class="date-info" id="monthDate"></span></p>
+                        <p>This Year: <span id="yearIncome">₱0.00</span> <span class="date-info" id="yearDate"></span></p>
+                    </div>
+
+                    <hr class="summary-divider"> <div class="summary-details-grid">
+                        <p>Total Pages: <span id="summaryTotalPages">0</span></p>
+                        <p>Transactions: <span id="summaryNumTransactions">0</span></p>
+                        <p>Total Short: <span id="summaryTotalShortPages">0</span></p>
+                        <p>Total Long: <span id="summaryTotalLongPages">0</span></p>
+                        <p>Total A4: <span id="summaryTotalA4Pages">0</span></p>
+                        <p>Total Photo: <span id="summaryTotalPhotoPaperPages">0</span></p>
+                        <p>Total Black: <span id="summaryTotalBlackPages">0</span></p>
+                        <p>Total Colored: <span id="summaryTotalColoredPages">0</span></p>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

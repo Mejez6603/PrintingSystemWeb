@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Printing Shop Logo">
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-button" id="transactionNavBtn">Transaction</button>
+                <button class="nav-button active" id="reportNavBtn">Report</button>
+            </nav>
+            <div class="sidebar-bottom">
+                <button class="reset-button" id="resetRecordsBtn">Reset Records</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <section class="sales-report-section card">
+                <h2>Sales Report</h2>
+                <div class="date-range-controls">
+                    <label for="reportDateFrom">Date From:</label>
+                    <input type="date" id="reportDateFrom" class="input-field">
+                    <label for="reportDateTo">To:</label>
+                    <input type="date" id="reportDateTo" class="input-field">
+                    <button id="generateReportBtn" class="primary-btn">Generate Report</button>
+                </div>
+                <div class="quick-date-buttons">
+                    <button class="nav-button" id="todayReportBtn">Today</button>
+                    <button class="nav-button" id="thisWeekReportBtn">This Week</button>
+                    <button class="nav-button" id="thisMonthReportBtn">This Month</button>
+                    <button class="nav-button" id="thisYearReportBtn">This Year</button>
+                </div>
+
+                <div class="table-container report-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Paper Type</th>
+                                <th>Color</th>
+                                <th>Pages</th>
+                                <th>Price/Page</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-controls">
+                    <button id="prevPageBtn" class="nav-button disabled" disabled>Previous</button>
+                    <div id="pageNumbers" class="page-numbers">
+                    </div>
+                    <button id="nextPageBtn" class="nav-button disabled" disabled>Next</button>
+                </div>
+
+                <div class="report-summary-export">
+                    <div class="report-summary-details">
+                        <p>Total Sales: <span id="reportTotalSales">₱0.00</span></p>
+                        <p>Total Pages: <span id="reportTotalPages">0</span></p>
+                        <p>Transactions: <span id="reportNumTransactions">0</span></p>
+                        <p>Total Short Pages: <span id="reportTotalShortPages">0</span></p>
+                        <p>Total Long Pages: <span id="reportTotalLongPages">0</span></p>
+                        <p>Total A4 Pages: <span id="reportTotalA4Pages">0</span></p>
+                        <p>Total PhotoPaper Pages: <span id="reportTotalPhotoPaperPages">0</span></p>
+                        <p>Total Black Pages: <span id="reportTotalBlackPages">0</span></p>
+                        <p>Total Colored Pages: <span id="reportTotalColoredPages">0</span></p>
+                    </div>
+                    <div class="report-export-buttons">
+                        <button class="primary-btn" id="exportCsvBtn">Export as CSV</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/report_script.js') }}"></script>
+</body>
+</html>
