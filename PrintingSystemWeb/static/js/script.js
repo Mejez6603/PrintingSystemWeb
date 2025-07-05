@@ -40,44 +40,58 @@ function formatDate(dateString) {
 }
 
 function formatTime(timeString) {
-    console.log("DEBUG: formatTime input timeString =", timeString); // Keep for debugging
+    console.log("DEBUG: formatTime input timeString =", timeString); // Keep this debug line
 
     if (!timeString) {
         return "N/A";
     }
 
-    let date; // Declare date here
+    let date = new Date(); // Start with a Date object (defaults to current date/time)
+    date.setSeconds(0); // Clear seconds/milliseconds to ensure clean time
+    date.setMilliseconds(0);
 
-    // Robust parsing for HH:MM AM/PM format (e.g., "09:13PM") - for customer order side
+    // --- FIX: Robustly parse HH:MM AM/PM format using regex ---
     const ampmMatch = timeString.match(/^(\d{1,2}):(\d{2})(AM|PM)$/i);
     if (ampmMatch) {
         let hours = parseInt(ampmMatch[1]);
-        const minutes = parseInt(amppmatch[2]);
-        const ampm = ampmMatch[3].toUpperCase();
+        const minutes = parseInt(ampmMatch[2]);
+        const ampm = ampmMatch[3].toUpperCase(); // Ensure AM/PM is uppercase for logic
 
+        // Convert 12-hour to 24-hour format
         if (ampm === 'PM' && hours < 12) {
             hours += 12;
         }
-        if (ampm === 'AM' && hours === 12) {
+        if (ampm === 'AM' && hours === 12) { // Midnight (12 AM is 0 hours in 24hr format)
             hours = 0;
         }
-        // Create Date object assuming current date, but with these hours/minutes
-        date = new Date();
-        date.setHours(hours, minutes, 0, 0); // Set hours, minutes, seconds, milliseconds
+
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        // Seconds are assumed to be 0 as not provided in "HH:MM AM/PM"
     }
-    // FIX: Explicitly parse HH:MM:SS as UTC
+    // --- Existing Robust parsing for 24hr format (e.g., "14:30:00" or "14:30") ---
     else if (timeString.includes(':')) {
-        // Construct an ISO string with a dummy date and 'Z' for UTC
-        // Example: "2000-01-01T14:30:00Z"
-        date = new Date(`2000-01-01T${timeString}Z`);
-        console.log("DEBUG: Parsed as UTC Date object:", date); // Debugging
+        const parts = timeString.split(':');
+        const hours = parseInt(parts[0]);
+        const minutes = parseInt(parts[1]);
+        const seconds = parseInt(parts[2] || '0'); // Seconds might be optional, default to 0
+
+        if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
+            console.error("DEBUG: Invalid numeric parts in timeString (24hr parse):", timeString);
+            return "Invalid Time Value";
+        }
+
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        date.setSeconds(seconds);
     }
     // Fallback for completely unexpected formats
     else {
-        console.error("DEBUG: Unexpected timeString format encountered:", timeString);
+        console.error("DEBUG: Unexpected timeString format encountered, no match for AM/PM or 24hr:", timeString);
         return "Unknown Format";
     }
 
+    // Final check if the Date object is valid after all parsing attempts
     if (isNaN(date.getTime())) {
         console.error("DEBUG: Resulting Date object is Invalid after parsing. Original timeString:", timeString);
         return "Invalid Time Format";
