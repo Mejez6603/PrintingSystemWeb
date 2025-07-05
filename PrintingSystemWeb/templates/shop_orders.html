@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Orders - Printing System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Left Sidebar (Standard Navigation) -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Printing Shop Logo">
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-button" id="transactionNavBtn">Transaction</button>
+                <button class="nav-button" id="reportNavBtn">Report</button>
+                <button class="nav-button active" id="ordersNavBtn">Orders</button> <!-- Active for this page -->
+                <button class="nav-button" id="placeOrderNavBtn">Place Order</button>
+            </nav>
+            <div class="sidebar-bottom">
+                <button class="reset-button" id="resetRecordsBtn">Reset Records</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="date-time" id="currentDateTime"></div>
+            </header>
+
+            <section class="orders-section card">
+                <h2>Customer Order Requests</h2>
+
+                <div class="orders-controls">
+                    <label for="orderStatusFilter">Filter by Status:</label>
+                    <select id="orderStatusFilter" class="input-field">
+                        <option value="All">All</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Processed">Processed</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                    <button id="refreshOrdersBtn" class="primary-btn">Refresh List</button>
+                </div>
+
+                <div class="table-container orders-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Date</th>
+                                <th>Customer Name</th>
+                                <th>File Name</th>
+                                <th>File URL</th>
+                                <th>Notes</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <!-- Order requests will be dynamically loaded here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Controls (Optional, if you expect many orders) -->
+                <div class="pagination-controls">
+                    <button id="prevOrderPageBtn" class="nav-button disabled" disabled>Previous</button>
+                    <div id="orderPageNumbers" class="page-numbers">
+                        <!-- Page numbers will be inserted here by JavaScript -->
+                    </div>
+                    <button id="nextOrderPageBtn" class="nav-button disabled" disabled>Next</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Link to JavaScript file for orders page -->
+    <script src="{{ url_for('static', filename='js/shop_orders_script.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDateTime(); // From utility functions
+            loadOrders(); // Load initial orders
+            setupOrdersEventListeners(); // Setup event listeners for this page
+        });
+    </script>
+</body>
+</html>

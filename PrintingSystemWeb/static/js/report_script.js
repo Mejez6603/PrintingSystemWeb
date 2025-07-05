@@ -397,6 +397,14 @@ function setupReportEventListeners() {
     document.getElementById('reportNavBtn').addEventListener('click', () => {
         // Already on Report page
     });
+
+    document.getElementById('ordersNavBtn').addEventListener('click', () => { // This is Orders button
+        window.location.href = '/shop-orders';
+    });
+    document.getElementById('placeOrderNavBtn').addEventListener('click', () => { // <--- THIS BUTTON
+        window.open('/customer-order', '_blank'); // <--- This is the line for Place Order
+    });
+
     document.getElementById('resetRecordsBtn').addEventListener('click', () => {
         if (confirm("Are you sure you want to delete ALL sales records?\nThis action cannot be undone.")) {
             fetch('/reset-records', { method: 'POST' })

@@ -44,9 +44,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="PrintingSystemWeb\static\css\style.css" />
+    <Content Include="PrintingSystemWeb\static\js\customer_order_script.js" />
     <Content Include="PrintingSystemWeb\static\js\report_script.js" />
     <Content Include="PrintingSystemWeb\static\js\script.js" />
+    <Content Include="PrintingSystemWeb\static\js\shop_orders_script.js" />
+    <Content Include="PrintingSystemWeb\templates\customer_order.html" />
+    <Content Include="PrintingSystemWeb\templates\debug_input_test.html" />
     <Content Include="PrintingSystemWeb\templates\report.html" />
+    <Content Include="PrintingSystemWeb\templates\shop_orders.html" />
     <Content Include="requirements.txt" />
     <Content Include="PrintingSystemWeb\static\content\bootstrap.css" />
     <Content Include="PrintingSystemWeb\static\content\bootstrap.min.css" />
@@ -69,7 +74,6 @@
     <Content Include="PrintingSystemWeb\static\scripts\modernizr-2.6.2.js" />
     <Content Include="PrintingSystemWeb\static\scripts\respond.js" />
     <Content Include="PrintingSystemWeb\static\scripts\respond.min.js" />
-    <Content Include="PrintingSystemWeb\static\scripts\_references.js" />
     <Content Include="PrintingSystemWeb\templates\index.html" />
   </ItemGroup>
   <ItemGroup>

@@ -79,6 +79,30 @@ h1, h2, h3, h4, h5, h6 {
     flex-grow: 1; /* Allows nav to take available space */
 }
 
+/* Styling for the new shop name display in sidebar */
+.shop-name-display {
+    text-align: center;
+    margin-top: 20px; /* Space from logo */
+    margin-bottom: 30px; /* Space before sidebar-bottom or other content */
+    padding: 0 10px; /* Some horizontal padding */
+    width: 100%;
+}
+
+    .shop-name-display h3 {
+        font-size: 1.2rem;
+        color: var(--light-text);
+        margin-bottom: 5px;
+        white-space: nowrap; /* Keep name on one line */
+        overflow: hidden;
+        text-overflow: ellipsis; /* Add ellipsis if too long */
+    }
+
+    .shop-name-display p {
+        font-size: 0.9rem;
+        color: #a0a0a0; /* Slightly dimmer for service description */
+        margin-bottom: 0;
+    }
+
 .nav-button, .reset-button {
     width: 80%;
     padding: 12px 10px;
@@ -194,6 +218,12 @@ h1, h2, h3, h4, h5, h6 {
         box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
     }
 
+    .input-field[disabled] { /* Style for disabled input fields like Total */
+        background-color: var(--disabled-color);
+        color: #a0a0a0;
+        cursor: not-allowed;
+    }
+
 select.input-field {
     appearance: none; /* Remove default arrow on select */
     -webkit-appearance: none;
@@ -288,7 +318,8 @@ th, td {
     border: 1px solid var(--border-color);
     padding: 12px 15px;
     text-align: left;
-    white-space: nowrap; /* Prevent text wrapping in cells */
+    /* REMOVED: white-space: nowrap; */ /* Text will now wrap naturally */
+    vertical-align: top; /* Make sure this is 'top' or 'middle' if you want */
 }
 
 thead th {
@@ -451,11 +482,11 @@ tbody tr.selected {
     /* If you wanted specific overrides for record-section only, you'd add them here */
 }
 
-.record-section .table-container {
-    max-height: 300px; /* Adjust this value as needed. This will be the visible height of the scrollable area. */
-    overflow-y: auto;  /* Enables the vertical scrollbar when content overflows */
-    /* Keep existing properties like overflow-x: auto; if it was there */
-}
+    .record-section .table-container {
+        max-height: 300px; /* Adjust this value as needed. This will be the visible height of the scrollable area. */
+        overflow-y: auto; /* Enables the vertical scrollbar when content overflows */
+        /* Keep existing properties like overflow-x: auto; if it was there */
+    }
 
 /* Styling for Pagination Controls */
 .pagination-controls {
@@ -499,4 +530,131 @@ tbody tr.selected {
 .pagination-controls .nav-button { /* Re-use nav-button style for Prev/Next */
     padding: 8px 15px;
     width: auto; /* Override width from sidebar nav-button */
+}
+
+/* Customer Info Grid */
+.customer-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Creates two columns for the form-groups */
+    gap: 15px; /* Gap between form-groups */
+    margin-bottom: 20px;
+}
+
+/* Styling for individual form groups (label + input) */
+.form-group {
+    display: flex;
+    flex-direction: column; /* Stacks label above input */
+    gap: 5px; /* Small gap between label and input */
+}
+
+    .form-group label { /* Style the label directly */
+        font-weight: bold;
+        color: var(--light-text);
+        text-align: left; /* Align labels to the left */
+        margin-bottom: 0; /* Remove any default margin */
+    }
+
+    /* Specific styling for textarea to give it height */
+    .form-group textarea.input-field {
+        min-height: 80px; /* Give it some height */
+        resize: vertical; /* Allow vertical resizing by user */
+        box-sizing: border-box; /* Ensure padding/border are included in dimensions */
+    }
+
+    /* Style to make a form-group span two columns */
+    .form-group.span-2-columns {
+        grid-column: span 2; /* Make this item span both columns in the grid */
+    }
+
+/* Styling for the File URL link in the table */
+.file-url-link {
+    color: var(--primary-color); /* Use your primary blue color */
+    text-decoration: none; /* Remove default underline */
+    font-weight: bold; /* Make it stand out a bit */
+    transition: color 0.2s ease; /* Smooth color transition on hover */
+}
+
+    .file-url-link:hover {
+        color: var(--light-text); /* Change color on hover for visual feedback */
+        text-decoration: underline; /* Add underline on hover for clarity */
+    }
+
+/* Styling for the 'Items in Transaction' table container to enable vertical scroll */
+.items-in-transaction-section .table-container {
+    max-height: 500px; /* Adjust this value as needed. This will be the visible height of the scrollable area. */
+    overflow-y: auto; /* Enables the vertical scrollbar when content overflows */
+    /* Keep existing properties like overflow-x: auto; if it was there */
+}
+
+/* Orders Section Styling */
+.orders-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+    .orders-controls label {
+        color: var(--light-text);
+        font-weight: bold;
+    }
+
+.orders-table-container {
+    max-height: 400px; /* Adjust height as needed for scroll */
+    overflow-y: auto;
+}
+
+    /* Specific styling for action buttons in orders table */
+    .orders-table-container .action-buttons button {
+        padding: 5px 10px; /* Make action buttons a bit larger than generic table buttons */
+        margin-right: 5px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        color: white;
+        transition: background-color 0.2s ease;
+    }
+
+        .orders-table-container .action-buttons button.primary-btn {
+            background-color: var(--primary-color);
+        }
+
+            .orders-table-container .action-buttons button.primary-btn:hover {
+                background-color: #0056b3;
+            }
+
+        .orders-table-container .action-buttons button.danger-btn {
+            background-color: var(--danger-color);
+        }
+
+            .orders-table-container .action-buttons button.danger-btn:hover {
+                background-color: #c82333;
+            }
+
+        .orders-table-container .action-buttons button.secondary-btn {
+            background-color: var(--secondary-color);
+        }
+
+            .orders-table-container .action-buttons button.secondary-btn:hover {
+                background-color: #5a6268;
+            }
+
+    /* Styling for combined Notes + Items column */
+    .orders-table-container .notes-column ul {
+        list-style: none; /* Remove bullet points */
+        padding-left: 0;
+        margin-top: 5px;
+        margin-bottom: 0;
+        font-size: 0.8rem; /* Smaller font for item list */
+        color: #a0a0a0; /* Dimmer color */
+    }
+
+        .orders-table-container .notes-column ul li {
+            margin-bottom: 2px;
+        }
+
+/* Styling for File Name column to handle long text */
+td.file-name-column {
+    white-space: normal; /* Allow text to wrap naturally */
+    word-break: break-all; /* Breaks long words (if they have no spaces) at any character */
+    overflow-wrap: break-word; /* Modern equivalent */
 }

@@ -396,6 +396,14 @@ function setupEventListeners() {
         window.location.href = '/report'; // Navigate to report page
     });
 
+    document.getElementById('ordersNavBtn').addEventListener('click', () => {
+        window.location.href = '/shop-orders';
+    });
+
+    document.getElementById('placeOrderNavBtn').addEventListener('click', () => {
+        window.open('/customer-order', '_blank'); // <--- MODIFIED LINE: Opens in a new tab
+    });
+
     // Reset Button
     document.getElementById('resetRecordsBtn').addEventListener('click', resetRecords);
 }

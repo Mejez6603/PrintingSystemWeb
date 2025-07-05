@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Debug Test</title>
+</head>
+<body>
+    <h1>File Name Input Test</h1>
+    <p>Type something into the box below and click "Check Value".</p>
+    <input type="text" id="fileNameTest" class="input-field" placeholder="Type 'test' here">
+    <button id="checkValueBtn">Check Value</button>
+
+    <script>
+        const fileNameTestInput = document.getElementById('fileNameTest');
+        const checkValueBtn = document.getElementById('checkValueBtn');
+
+        checkValueBtn.addEventListener('click', () => {
+            const typedValue = fileNameTestInput.value;
+            const trimmedValue = typedValue.trim();
+
+            console.log("--- DEBUG TEST RESULTS ---");
+            console.log("1. Raw value of input:", `"${typedValue}"`);
+            console.log("2. Raw length of input:", typedValue.length);
+            console.log("3. Trimmed value of input:", `"${trimmedValue}"`);
+            console.log("4. Trimmed length of input:", trimmedValue.length);
+
+            if (trimmedValue.length > 0) {
+                alert("Success! Value is NOT empty. It is: " + trimmedValue);
+            } else {
+                alert("Problem: Value IS empty, even after typing!");
+            }
+        });
+    </script>
+</body>
+</html>

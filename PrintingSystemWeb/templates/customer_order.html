@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Order - Printing Shop</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Printing Shop Logo">
+            </div>
+            <div class="shop-name-display">
+                <h3>Mejez Studio</h3>
+                <p>Printing Service</p>
+            </div>
+            <div class="sidebar-bottom">
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <div class="date-time" id="currentDateTime"></div>
+            </header>
+
+            <section class="customer-order-section card">
+                <h2>Place Your Order</h2>
+
+                <div class="customer-info-simple">
+                    <label for="customerName">Your Name</label>
+                    <input type="text" id="customerName" class="input-field" placeholder="Full Name">
+
+                    <label for="fileName">File Name/Description</label>
+                    <input type="text" id="fileName" class="input-field" placeholder="Document Name/Description" required>
+
+                    <label for="fileUrl">File URL (Optional)</label>
+                    <input type="url" id="fileUrl" class="input-field" placeholder="Link to your file (e.g., Google Drive)">
+
+                    <label for="note">Notes (Optional)</label>
+                    <textarea id="note" class="input-field" placeholder="Any special instructions?"></textarea>
+                </div>
+
+                <hr class="summary-divider">
+
+                <h3>Printing Details</h3>
+                <div class="transaction-input-controls">
+                    <div class="transaction-input-grid">
+                        <div class="grid-header">Paper Type</div>
+                        <div class="grid-header">Color</div>
+                        <div class="grid-header">Pages</div>
+                        <div class="grid-header">Price/Page</div>
+                        <div class="grid-header">Total</div>
+
+                        <select id="paperType" class="input-field">
+                            <option value="">--Select--</option>
+                            <option value="Short">Short</option>
+                            <option value="Long">Long</option>
+                            <option value="A4">A4</option>
+                            <option value="PhotoPaper">PhotoPaper</option>
+                        </select>
+                        <select id="color" class="input-field">
+                            <option value="">--Select--</option>
+                            <option value="Black">Black</option>
+                            <option value="Colored">Colored</option>
+                        </select>
+                        <input type="number" id="pages" class="input-field" placeholder="Pages" min="1">
+                        <input type="text" id="pricePerPage" class="input-field" placeholder="Auto" readonly disabled>
+                        <input type="text" id="total" class="input-field" placeholder="Total" readonly>
+                    </div>
+                    <button id="addItemBtn" class="add-item-btn primary-btn disabled" disabled>Add Item</button>
+                </div>
+
+                <section class="items-in-transaction-section card">
+                    <h2>Requested Items</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Your Name</th>
+                                    <th>File Name</th>
+                                    <th>File URL</th>
+                                    <th>Notes</th>
+                                    <th>Paper Type</th>
+                                    <th>Color</th>
+                                    <th>Pages</th>
+                                    <th>Price/Page</th>
+                                    <th>Total</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsInTransactionTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                    <button id="submitOrderBtn" class="confirm-transaction-btn primary-btn">Submit Order Request</button>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/customer_order_script.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDateTime();
+            setupCustomerOrderEventListeners();
+        });
+    </script>
+</body>
+</html>
