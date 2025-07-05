@@ -419,15 +419,15 @@ def process_order_api(request_id):
             return jsonify({'message': 'Order already processed.'}), 400
         
         # Create a new TransactionHeader from the CustomerOrderRequest
-       now_utc = datetime.now(timezone.utc) # Get current time in UTC
-        transaction_id = f"TRX-{now_utc.strftime('%Y%m%d-%H%M%S')}-{order_request.request_id}" # Link to request_id
+        now_utc = datetime.now(timezone.utc) # NEW: Use timezone.utc
+        transaction_id = f"TRX-{now_utc.strftime('%Y%m%d-%H%M%S')}-{order_request.request_id}"
         
         total_transaction_amount = sum(item.item_total for item in order_request.items)
 
         header = TransactionHeader(
             id=transaction_id,
-            transaction_date=now.date(),
-            transaction_time=now.time(),
+            transaction_date=now_utc.date(),
+            transaction_time=now_utc.time(),
             total_amount=total_transaction_amount
         )
         db.session.add(header)
