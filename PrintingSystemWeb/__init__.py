@@ -3,7 +3,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
-from datetime import datetime # Import datetime for default values in models
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -21,8 +21,6 @@ class TransactionHeader(db.Model):
     transaction_time = db.Column(db.Time, nullable=False)
     total_amount = db.Column(db.Numeric(10, 2), nullable=False, default=0.00)
 
-    # Relationship to TransactionItem (lazy='joined' or lazy=True for common loading)
-    # cascade="all, delete-orphan" makes sure items are deleted if header is.
     items = db.relationship('TransactionItem', backref='header', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
@@ -37,8 +35,7 @@ class TransactionHeader(db.Model):
         }
 
 class TransactionItem(db.Model):
-    item_id = db.Column(db.Integer, primary_key=True, autoincrement=True) # Auto-incrementing primary key
-    # Foreign Key to TransactionHeader
+    item_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     transaction_header_id = db.Column(db.String(50), db.ForeignKey('transaction_header.id'), nullable=False)
     
     paper_type = db.Column(db.String(50), nullable=False)
