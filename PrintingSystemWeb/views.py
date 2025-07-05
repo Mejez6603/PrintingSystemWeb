@@ -62,7 +62,7 @@ def index():
 def report_page():
     return render_template('report.html')
 
-# Route for the Shop Orders HTML page (to view customer requests)
+# NEW: Route for the Shop Orders HTML page (to view customer requests)
 @app.route('/shop-orders')
 def shop_orders_page():
     # This will render a new HTML file you'll create later
@@ -78,18 +78,19 @@ def confirm_transaction_api():
         return jsonify({'message': 'No items provided for transaction'}), 400
 
     try:
-        now_utc = datetime.now(timezone.utc)
+        now_utc = datetime.now(timezone.utc) # NEW: Use timezone.utc
         transaction_id = f"TRX-{now_utc.strftime('%Y%m%d-%H%M%S')}"
         
         total_transaction_amount = sum(item['itemTotal'] for item in items_data)
 
         header = TransactionHeader(
             id=transaction_id,
-            transaction_date=now_utc.date(),
-            transaction_time=now_utc.time(),
+            transaction_date=now_utc.date(), # Store date part from UTC
+            transaction_time=now_utc.time(), # Store time part from UTC
             total_amount=total_transaction_amount
         )
         db.session.add(header)
+        db.session.flush()
 
         for item_data in items_data:
             item = TransactionItem(
@@ -108,39 +109,43 @@ def confirm_transaction_api():
         db.session.rollback()
         return jsonify({'message': f'Failed to confirm transaction: {str(e)}'}), 500
 
-# Customer Order Page Route
+# NEW: Customer Order Page Route
 @app.route('/customer-order')
 def customer_order_page():
     return render_template('customer_order.html')
 
-# API to submit a customer order request
+# NEW: API to submit a customer order request
 @app.route('/submit-customer-order', methods=['POST'])
 def submit_customer_order_api():
     data = request.get_json()
+    print(f"DEBUG: Received customer order data: {data}") # NEW DEBUG
     customer_name = data.get('customerName')
     file_name = data.get('fileName')
     file_url = data.get('fileUrl')
     note = data.get('note')
+    print(f"DEBUG: Extracted fileName: '{file_name}', fileUrl: '{file_url}', note: '{note}'") # NEW DEBUG
     items_data = data.get('items', [])
 
     if not customer_name or not file_name or not items_data:
         return jsonify({'message': 'Missing required customer info or items.'}), 400
 
     try:
+        # Create CustomerOrderRequest header
         order_request = CustomerOrderRequest(
             customer_name=customer_name,
             file_name=file_name,
             file_url=file_url,
             note=note,
-            request_date=datetime.now(),
-            status='Pending'
+            request_date=datetime.now(), # Use current datetime for request_date
+            status='Pending' # Default status
         )
         db.session.add(order_request)
-        db.session.flush()
+        db.session.flush() # Flush to get request_id before adding items
 
+        # Create CustomerOrderItems
         for item_data in items_data:
             item = CustomerOrderItem(
-                request_header_id=order_request.request_id,
+                request_header_id=order_request.request_id, # Link to the new request
                 paper_type=item_data['paperType'],
                 color=item_data['color'],
                 pages=item_data['pages'],
@@ -148,7 +153,7 @@ def submit_customer_order_api():
                 item_total=item_data['itemTotal']
             )
             db.session.add(item)
-        
+
         db.session.commit()
         return jsonify({'message': 'Order request submitted successfully!', 'requestId': order_request.request_id}), 200
     except Exception as e:
@@ -178,6 +183,7 @@ def get_sales_summary_api():
     month_income = generate_monthly_sales_report(today.strftime("%m/%Y"))
     year_income = sum(generate_monthly_sales_report(f"{m:02}/{today.year}") for m in range(1, 13))
 
+    # --- Fetch all items to calculate detailed summaries ---
     all_items_in_db = TransactionItem.query.all()
 
     total_pages = 0
@@ -226,8 +232,8 @@ def get_sales_summary_api():
 def get_detailed_report_api():
     from_date_str = request.args.get('fromDate')
     to_date_str = request.args.get('toDate')
-    page = request.args.get('page', 1, type=int)
-    per_page = 10 
+    page = request.args.get('page', 1, type=int) # Get page number, default to 1
+    per_page = 10 # Define items per page
 
     if not from_date_str or not to_date_str:
         return jsonify({'message': 'Missing date parameters'}), 400
@@ -238,7 +244,7 @@ def get_detailed_report_api():
     
     paginated_records = [item.to_dict() for item in pagination.items]
 
-    all_records_for_summary = base_query.all()
+    all_records_for_summary = base_query.all() # Get all records without pagination for summary
     
     total_sales = 0.0
     total_pages = 0
@@ -319,7 +325,7 @@ def migrate_data():
     try:
         with open(old_csv_path, 'r', newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
-            next(reader) 
+            next(reader) # Skip header
 
             transactions_by_id = {}
             for row in reader:
@@ -375,3 +381,97 @@ def migrate_data():
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': f'Migration failed: {str(e)}'}), 500
+
+@app.route('/get-customer-orders', methods=['GET'])
+def get_customer_orders_api():
+    status_filter = request.args.get('status', 'All')
+    page = request.args.get('page', 1, type=int)
+    per_page = 10 # Define items per page for orders list
+
+    query = CustomerOrderRequest.query.order_by(CustomerOrderRequest.request_date.desc())
+
+    if status_filter != 'All':
+        query = query.filter_by(status=status_filter)
+    
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+
+    orders_data = [order.to_dict() for order in pagination.items]
+    print(f"DEBUG: Orders data being sent to frontend: {orders_data}")
+    return jsonify({
+        'orders': orders_data,
+        'pagination': {
+            'currentPage': pagination.page,
+            'totalPages': pagination.pages,
+            'totalItems': pagination.total,
+            'perPage': pagination.per_page
+        }
+    }), 200
+
+# API to process a customer order request
+@app.route('/process-order/<int:request_id>', methods=['POST'])
+def process_order_api(request_id):
+    try:
+        order_request = CustomerOrderRequest.query.get(request_id)
+        if not order_request:
+            return jsonify({'message': 'Order request not found.'}), 404
+
+        if order_request.status == 'Processed':
+            return jsonify({'message': 'Order already processed.'}), 400
+        
+        # Create a new TransactionHeader from the CustomerOrderRequest
+       now_utc = datetime.now(timezone.utc) # Get current time in UTC
+        transaction_id = f"TRX-{now_utc.strftime('%Y%m%d-%H%M%S')}-{order_request.request_id}" # Link to request_id
+        
+        total_transaction_amount = sum(item.item_total for item in order_request.items)
+
+        header = TransactionHeader(
+            id=transaction_id,
+            transaction_date=now.date(),
+            transaction_time=now.time(),
+            total_amount=total_transaction_amount
+        )
+        db.session.add(header)
+        db.session.flush() # Ensure header ID is available for items
+
+        # Create TransactionItems from CustomerOrderItems
+        for order_item in order_request.items:
+            transaction_item = TransactionItem(
+                transaction_header_id=transaction_id,
+                paper_type=order_item.paper_type,
+                color=order_item.color,
+                pages=order_item.pages,
+                price_per_page=order_item.price_per_page,
+                item_total=order_item.item_total
+            )
+            db.session.add(transaction_item)
+        
+        # Update status of CustomerOrderRequest
+        order_request.status = 'Processed'
+        db.session.commit()
+
+        return jsonify({'message': f'Order request {request_id} processed successfully! Transaction {transaction_id} created.'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': f'Failed to process order request {request_id}: {str(e)}'}), 500
+
+# API to reject a customer order request
+@app.route('/reject-order/<int:request_id>', methods=['POST'])
+def reject_order_api(request_id):
+    try:
+        order_request = CustomerOrderRequest.query.get(request_id)
+        if not order_request:
+            return jsonify({'message': 'Order request not found.'}), 404
+
+        if order_request.status == 'Rejected':
+            return jsonify({'message': 'Order already rejected.'}), 400
+
+        order_request.status = 'Rejected'
+        db.session.commit()
+        return jsonify({'message': f'Order request {request_id} rejected successfully!'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': f'Failed to reject order request {request_id}: {str(e)}'}), 500
+
+@app.route('/debug-input-test')
+def debug_input_test_page():
+    return render_template('debug_input_test.html')
